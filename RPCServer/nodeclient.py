@@ -84,6 +84,52 @@ class node:
         return info
 
 
+    async def getblockhash(self, *args, **kwargs):
+        """
+        Returns the hash of a given block_height
+        """
+        try:
+            self.connection.send("blockget")
+            self.connection.send(str(args[1]))
+            block = self.connection.receive()
+            block = block[0][7]
+            
+        except Exception as e:
+            block = {"version":self.config.version, "error":str(e)}
+        
+        return block
+        
+    
+    async def getrawmempool(self, *args, **kwargs):
+        """
+        WIP
+        """
+        try:
+            self.connection.send("mempool")
+            self.connection.send([])
+            mempool = self.connection.receive()
+            # WIP
+            
+        except Exception as e:
+            mempool = {"version":self.config.version, "error":str(e)}
+        
+        return mempool
+        
+        
+    async def getdifficulty(self, *args, **kwargs):
+        """
+        Returns the current network difficulty
+        """
+        try:
+            info = await self.getinfo()
+            diff = info["difficulty"]
+            
+        except Exception as e:
+            diff = {"version":self.config.version, "error":str(e)}
+            
+        return diff
+
+
     async def getblocknumber(self, *args, **kwargs):
         """
         Deprecated. Removed in version 0.7. Use getblockcount. 
